@@ -24,7 +24,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY',
                                 '51f52814-0071-11e6-a247-000ec6c2372c')
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'db.sqlite'))
+        'DATABASE_URL', 'mysql+pymysql://root:cisco123@localhost:3306/test')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     REQUEST_STATS_WINDOW = 15
     CELERY_CONFIG = {}
