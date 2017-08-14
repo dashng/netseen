@@ -21,10 +21,8 @@ class Router(Table):
     '''
     router tables
     '''
-
     __tablename__ = 'Router'
     ip_int = Column(Integer, primary_key=True, nullable=False, unique=True)
-    ip_string = Column(String(32), nullable=False, unique=True)
     host_name = Column(String(32), nullable=False, unique=True)
     cpu = Column(Integer, nullable=False)
     memory = Column(Integer, nullable=False)

@@ -4,16 +4,16 @@ import os
 import sys
 import unittest
 
-sys.path.insert(0, os.getcwd())
-
 from flask_script import Manager
 
 from netseen import create_app
 from netseen.extensions import db
+from netseen.models.database import DataBase
 from netseen.models.user import User
 
-manager = Manager(create_app)
+sys.path.insert(0, os.getcwd())
 
+manager = Manager(create_app)
 
 @manager.command
 def test():
@@ -32,6 +32,7 @@ def createdb(drop_first=False):
     if drop_first:
         db.drop_all()
     db.create_all()
+    DataBase().create_all()
 
 
 @manager.command

@@ -13,22 +13,19 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sqlalchemy import Column, create_engine, DateTime, func
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
-BASE = declarative_base()
+from sqlalchemy import Column, Integer, String
+from netseen.models.table import Table
 
-class Table(BASE):
+class Router(Table):
     '''
-    base table
+    router tables
     '''
-    __abstract__ = True
-    created_on = Column(DateTime, default=func.now())
-    updated_on = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    def __str__(self):
-        pass
-
-if __name__ == '__main__':
-    pass
+    __tablename__ = 'Prefix'
+    ip_int = Column(Integer, primary_key=True, nullable=False, unique=True)
+    ip_string = Column(String(32), nullable=False, unique=True)
+    host_name = Column(String(32), nullable=False, unique=True)
+    cpu = Column(Integer, nullable=False)
+    memory = Column(Integer, nullable=False)
+    vendor = Column(String(32), nullable=False)

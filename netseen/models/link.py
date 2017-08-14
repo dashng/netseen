@@ -13,22 +13,21 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sqlalchemy import Column, create_engine, DateTime, func
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 
-BASE = declarative_base()
+from sqlalchemy import Column, Integer, String, Float
+from netseen.models.table import Table
 
-class Table(BASE):
+class Router(Table):
     '''
-    base table
+    router tables
     '''
-    __abstract__ = True
-    created_on = Column(DateTime, default=func.now())
-    updated_on = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    def __str__(self):
-        pass
+    __tablename__ = 'Link'
+    link_local_ipv4_int = Column(Integer, primary_key=True, nullable=False, unique=False)
+    link_remote_ipv4 = Column(Integer, primary_key=True, nullable=False, unique=False)
+    adj_segment_id = Column(Integer, nullable=True)
+    metric_igp = Column(Integer, nullable=True)
+    metric_te = Column(Integer, nullable=True)
+    max_bandwidth = Column(Float, nullable=True)
+    max_rsv_bandwidth = Column(Float, nullable=True)
 
-if __name__ == '__main__':
-    pass

@@ -13,22 +13,40 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sqlalchemy import Column, create_engine, DateTime, func
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-BASE = declarative_base()
+from netseen.models.router import Router
+from netseen.models.table import BASE
 
-class Table(BASE):
+
+class DataBase(object):
     '''
-    base table
+    get DB session
     '''
-    __abstract__ = True
-    created_on = Column(DateTime, default=func.now())
-    updated_on = Column(DateTime, default=func.now(), onupdate=func.now())
+    def __init__(self):
+        super(DataBase, self).__init__()
 
-    def __str__(self):
-        pass
+    def get_engine(self):
+        '''
+        create db engine
+        '''
+        engine = create_engine('mysql+pymysql://root:cisco123@localhost:3306/test')
+        return engine
+
+    def get_session(self):
+        '''
+        get db session
+        '''
+        engine = self.get_engine()
+        return sessionmaker(bind=engine)
+
+    def create_all(self):
+        '''
+        create all tables
+        '''
+        BASE.metadata.create_all(self.get_engine())
 
 if __name__ == '__main__':
     pass

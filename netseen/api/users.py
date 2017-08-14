@@ -20,6 +20,7 @@ from flask import abort, jsonify, request
 from netseen.extensions import db
 from netseen.api import api_blueprint
 from netseen.models.user import User
+from netseen.models.router import Router
 from netseen.utils import url_for
 from netseen.auth import token_optional_auth
 
