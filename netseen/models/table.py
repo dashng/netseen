@@ -13,9 +13,23 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
+from sqlalchemy import Column, DateTime, func
+from sqlalchemy.ext.declarative import declarative_base
 
-api_blueprint = Blueprint('api', __name__)  # noqa
+BASE = declarative_base()
 
-# from . import users
-# from . import tokens
+
+class Table(BASE):
+    '''
+    base table
+    '''
+    __abstract__ = True
+    created_on = Column(DateTime, default=func.now())
+    updated_on = Column(DateTime, default=func.now(), onupdate=func.now())
+
+    def __str__(self):
+        pass
+
+
+if __name__ == '__main__':
+    pass

@@ -13,24 +13,23 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from base import BaseTestCase
+
+from sqlalchemy import Column, Integer, Float
+from netseen.models.table import Table
 
 
-class TestUser(BaseTestCase):
+class Link(Table):
+    '''
+    router tables
+    '''
 
-    def test_user(self):
-
-        # create a new user
-        r, s, h = self.post('/api/users', data={'username': 'foo',
-                                                'password': 'bar'})
-        self.assertEqual(s, 201)
-        url = h['Location']
-        self.assertEqual(url, 'http://localhost/api/users/1')
-
-        # get users without auth
-        r, s, h = self.get('/api/users')
-        self.assertEqual(s, 200)
-
-        # get users with bad auth
-        r, s, h = self.get('/api/users', token_auth='bad-token')
-        self.assertEqual(s, 401)
+    __tablename__ = 'Link'
+    link_local_ipv4_int = Column(
+        Integer, primary_key=True, nullable=False, unique=False)
+    link_remote_ipv4 = Column(
+        Integer, primary_key=True, nullable=False, unique=False)
+    adj_segment_id = Column(Integer, nullable=True)
+    metric_igp = Column(Integer, nullable=True)
+    metric_te = Column(Integer, nullable=True)
+    max_bandwidth = Column(Float, nullable=True)
+    max_rsv_bandwidth = Column(Float, nullable=True)

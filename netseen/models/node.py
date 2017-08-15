@@ -13,9 +13,22 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
 
-api_blueprint = Blueprint('api', __name__)  # noqa
+from sqlalchemy import Column, Integer, String, ForeignKey
+from netseen.models.table import Table
 
-# from . import users
-# from . import tokens
+
+class Node(Table):
+    '''
+    router tables
+    '''
+
+    __tablename__ = 'Node'
+    host_name = Column(String(32), ForeignKey('Router.host_name'),
+                       primary_key=True, nullable=False)
+    local_router_id = Column(Integer, nullable=False)
+    as_num = Column(Integer, nullable=False)
+    bgpls_id = Column(Integer, nullable=False)
+    igp_id = Column(Integer, nullable=False)
+    bgpls_id = Column(Integer, nullable=False)
+    bgpls_id = Column(Integer, nullable=False)

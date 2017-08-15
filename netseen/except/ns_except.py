@@ -1,3 +1,4 @@
+
 # Copyright 2015-2017 Cisco Systems, Inc.
 # All rights reserved.
 #
@@ -13,9 +14,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
 
-api_blueprint = Blueprint('api', __name__)  # noqa
-
-# from . import users
-# from . import tokens
+class NSExcept(Exception):
+    '''
+    customize exception
+    '''
+    def __init__(self, err=None):
+        super(NSExcept, self).__init__(err)

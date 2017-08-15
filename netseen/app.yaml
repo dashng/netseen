@@ -13,9 +13,4 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
-
-api_blueprint = Blueprint('api', __name__)  # noqa
-
-# from . import users
-# from . import tokens
+DATABASE_URL: 'mysql+pymysql://root:cisco123@localhost:3306/test'

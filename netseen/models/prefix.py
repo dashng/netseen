@@ -13,9 +13,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
 
-api_blueprint = Blueprint('api', __name__)  # noqa
+from sqlalchemy import Column, Integer, String, ForeignKey
+from netseen.models.table import Table
 
-# from . import users
-# from . import tokens
+
+class Prefix(Table):
+    '''
+    router tables
+    '''
+
+    __tablename__ = 'Prefix'
+    prefix = Column(String(32), primary_key=True, nullable=False, unique=True)
+    prefix_sid = Column(Integer, nullable=False)
+    prefix_metric = Column(Integer, nullable=False)
+    # host_name = Column(String(32), nullable=False, unique=True)
+    host_name = Column(String(32), ForeignKey(
+        'Node.host_name'), nullable=False)
