@@ -17,13 +17,32 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from netseen.models.table import Table
 
+
 class Interface(Table):
     '''
     router tables
     '''
     __tablename__ = 'Interface'
-    ip_int = Column(Integer, primary_key=True, nullable=False, unique=True)
-    iface_oid = Column(Integer, primary_key=True, nullable=False, unique=False)
-    iface_name = Column(String(32), nullable=False)
+    ip_int = Column(
+        Integer, primary_key=True, nullable=False, unique=True)
+    iface_oid = Column(
+        Integer, primary_key=True, nullable=False, unique=False)
+    iface_name = Column(
+        String(32), nullable=False)
     speed = Column(Integer, nullable=False)
-    router_ip_int = Column(Integer, ForeignKey("Router.ip_int"), nullable=False)
+    router_ip_int = Column(
+        Integer, ForeignKey("Router.ip_int"), nullable=False)
+
+    # def __init__(self, ip_int=None, \
+    #     iface_oid=None, iface_name=None, \
+    #     speed=None, router_ip_int=None, created_on=None, updated_on=None):
+    #     '''
+    #     model init
+    #     '''
+    #     self.ip_int = ip_int
+    #     self.iface_oid = iface_oid
+    #     self.iface_name = iface_name
+    #     self.speed = speed
+    #     self.router_ip_int = router_ip_int
+    #     self.created_on = created_on
+    #     self.updated_on = updated_on

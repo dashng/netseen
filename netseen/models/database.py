@@ -16,18 +16,20 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from netseen.models.router import Router
-from netseen.models.node import Node
-from netseen.models.interface import Interface
-from netseen.models.link import Link
-from netseen.models.prefix import Prefix
+# from netseen.models.router import Router
+# from netseen.models.node import Node
+# from netseen.models.interface import Interface
+# from netseen.models.link import Link
+# from netseen.models.prefix import Prefix
 from netseen.models.table import BASE
 from netseen.lib.yaml_parser import YamlParser
+
 
 class DataBase(object):
     '''
     get DB session
     '''
+
     def __init__(self, db_url=None):
         self.db_url = db_url
         super(DataBase, self).__init__()
@@ -37,9 +39,13 @@ class DataBase(object):
         get data base url
         '''
         if not self.db_url:
-            cfg_file_path = os.path.normpath(\
-                os.path.join(os.path.abspath(__file__), "../../", "./app.yaml"))
-            self.db_url = YamlParser(path=cfg_file_path).yaml_to_dict().get('DATABASE_URL')
+            cfg_file_path = \
+                os.path.normpath(
+                    os.path.join(
+                        os.path.abspath(__file__),
+                        "../../", "./app.yaml"))
+            self.db_url = YamlParser(
+                path=cfg_file_path).yaml_to_dict().get('DATABASE_URL')
         return self.db_url
 
     def get_engine(self):

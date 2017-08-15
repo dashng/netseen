@@ -14,8 +14,9 @@
 #    under the License.
 
 
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, Float
 from netseen.models.table import Table
+
 
 class Link(Table):
     '''
@@ -23,11 +24,12 @@ class Link(Table):
     '''
 
     __tablename__ = 'Link'
-    link_local_ipv4_int = Column(Integer, primary_key=True, nullable=False, unique=False)
-    link_remote_ipv4 = Column(Integer, primary_key=True, nullable=False, unique=False)
+    link_local_ipv4_int = Column(
+        Integer, primary_key=True, nullable=False, unique=False)
+    link_remote_ipv4 = Column(
+        Integer, primary_key=True, nullable=False, unique=False)
     adj_segment_id = Column(Integer, nullable=True)
     metric_igp = Column(Integer, nullable=True)
     metric_te = Column(Integer, nullable=True)
     max_bandwidth = Column(Float, nullable=True)
     max_rsv_bandwidth = Column(Float, nullable=True)
-

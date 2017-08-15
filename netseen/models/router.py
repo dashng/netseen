@@ -18,6 +18,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from netseen.models.table import Table
 
+
 class Router(Table):
     '''
     router tables

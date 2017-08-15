@@ -17,14 +17,15 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from netseen.models.table import Table
 
+
 class Node(Table):
     '''
     router tables
     '''
 
     __tablename__ = 'Node'
-    host_name = Column(String(32), ForeignKey('Router.host_name'), \
-        primary_key=True, nullable=False)
+    host_name = Column(String(32), ForeignKey('Router.host_name'),
+                       primary_key=True, nullable=False)
     local_router_id = Column(Integer, nullable=False)
     as_num = Column(Integer, nullable=False)
     bgpls_id = Column(Integer, nullable=False)

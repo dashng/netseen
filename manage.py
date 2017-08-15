@@ -2,7 +2,6 @@
 
 import os
 import sys
-import unittest
 
 from flask_script import Manager
 
@@ -15,15 +14,15 @@ sys.path.insert(0, os.getcwd())
 
 manager = Manager(create_app)
 
-@manager.command
-def test():
-    """Runs the unit tests without coverage."""
-    tests = unittest.TestLoader().discover('tests', pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    else:
-        return 1
+# @manager.command
+# def test():
+#     """Runs the unit tests without coverage."""
+#     tests = unittest.TestLoader().discover('tests', pattern='test*.py')
+#     result = unittest.TextTestRunner(verbosity=2).run(tests)
+#     if result.wasSuccessful():
+#         return 0
+#     else:
+#         return 1
 
 
 @manager.command
@@ -33,7 +32,7 @@ def createdb(drop_first=False):
         db.drop_all()
     db.create_all()
     if drop_first:
-        DataBase().drop_all()    
+        DataBase().drop_all()
     DataBase().create_all()
 
 

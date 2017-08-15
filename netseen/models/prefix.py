@@ -17,6 +17,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from netseen.models.table import Table
 
+
 class Prefix(Table):
     '''
     router tables
@@ -27,4 +28,5 @@ class Prefix(Table):
     prefix_sid = Column(Integer, nullable=False)
     prefix_metric = Column(Integer, nullable=False)
     # host_name = Column(String(32), nullable=False, unique=True)
-    host_name = Column(String(32), ForeignKey('Node.host_name'), nullable=False)
+    host_name = Column(String(32), ForeignKey(
+        'Node.host_name'), nullable=False)

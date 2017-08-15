@@ -13,11 +13,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sqlalchemy import Column, create_engine, DateTime, func
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import Column, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 
 BASE = declarative_base()
+
 
 class Table(BASE):
     '''
@@ -29,6 +29,7 @@ class Table(BASE):
 
     def __str__(self):
         pass
+
 
 if __name__ == '__main__':
     pass
