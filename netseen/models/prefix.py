@@ -14,18 +14,17 @@
 #    under the License.
 
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from netseen.models.table import Table
 
-class Router(Table):
+class Prefix(Table):
     '''
     router tables
     '''
 
     __tablename__ = 'Prefix'
-    ip_int = Column(Integer, primary_key=True, nullable=False, unique=True)
-    ip_string = Column(String(32), nullable=False, unique=True)
-    host_name = Column(String(32), nullable=False, unique=True)
-    cpu = Column(Integer, nullable=False)
-    memory = Column(Integer, nullable=False)
-    vendor = Column(String(32), nullable=False)
+    prefix = Column(String(32), primary_key=True, nullable=False, unique=True)
+    prefix_sid = Column(Integer, nullable=False)
+    prefix_metric = Column(Integer, nullable=False)
+    # host_name = Column(String(32), nullable=False, unique=True)
+    host_name = Column(String(32), ForeignKey('Node.host_name'), nullable=False)

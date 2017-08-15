@@ -1,3 +1,4 @@
+
 # Copyright 2015-2017 Cisco Systems, Inc.
 # All rights reserved.
 #
@@ -13,17 +14,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-
-from sqlalchemy import Column, Integer, String, ForeignKey
-from netseen.models.table import Table
-
-class Interface(Table):
+class NSExcept(Exception):
     '''
-    router tables
+    customize exception
     '''
-    __tablename__ = 'Interface'
-    ip_int = Column(Integer, primary_key=True, nullable=False, unique=True)
-    iface_oid = Column(Integer, primary_key=True, nullable=False, unique=False)
-    iface_name = Column(String(32), nullable=False)
-    speed = Column(Integer, nullable=False)
-    router_ip_int = Column(Integer, ForeignKey("Router.ip_int"), nullable=False)
+    def __init__(self, err=None):
+        super(NSExcept, self).__init__(err)

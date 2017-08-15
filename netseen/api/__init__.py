@@ -17,5 +17,5 @@ from flask import Blueprint
 
 api_blueprint = Blueprint('api', __name__)  # noqa
 
-from . import users   # noqa
-from . import tokens  # noqa
+# from . import users
+# from . import tokens

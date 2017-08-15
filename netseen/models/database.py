@@ -13,26 +13,41 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 from netseen.models.router import Router
+from netseen.models.node import Node
+from netseen.models.interface import Interface
+from netseen.models.link import Link
+from netseen.models.prefix import Prefix
 from netseen.models.table import BASE
-
+from netseen.lib.yaml_parser import YamlParser
 
 class DataBase(object):
     '''
     get DB session
     '''
-    def __init__(self):
+    def __init__(self, db_url=None):
+        self.db_url = db_url
         super(DataBase, self).__init__()
+
+    def get_db_url(self):
+        '''
+        get data base url
+        '''
+        if not self.db_url:
+            cfg_file_path = os.path.normpath(\
+                os.path.join(os.path.abspath(__file__), "../../", "./app.yaml"))
+            self.db_url = YamlParser(path=cfg_file_path).yaml_to_dict().get('DATABASE_URL')
+        return self.db_url
 
     def get_engine(self):
         '''
         create db engine
         '''
-        engine = create_engine('mysql+pymysql://root:cisco123@localhost:3306/test')
+        db_url = self.get_db_url()
+        engine = create_engine(db_url)
         return engine
 
     def get_session(self):
@@ -47,6 +62,13 @@ class DataBase(object):
         create all tables
         '''
         BASE.metadata.create_all(self.get_engine())
+
+    def drop_all(self):
+        '''
+        drop all tables
+        '''
+        BASE.metadata.drop_all(self.get_engine())
+
 
 if __name__ == '__main__':
     pass

@@ -32,6 +32,8 @@ def createdb(drop_first=False):
     if drop_first:
         db.drop_all()
     db.create_all()
+    if drop_first:
+        DataBase().drop_all()    
     DataBase().create_all()
 
 

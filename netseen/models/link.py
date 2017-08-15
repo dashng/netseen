@@ -17,7 +17,7 @@
 from sqlalchemy import Column, Integer, String, Float
 from netseen.models.table import Table
 
-class Router(Table):
+class Link(Table):
     '''
     router tables
     '''

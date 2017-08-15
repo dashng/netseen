@@ -15,6 +15,7 @@
 
 
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from netseen.models.table import Table
 
 class Router(Table):
@@ -27,3 +28,6 @@ class Router(Table):
     cpu = Column(Integer, nullable=False)
     memory = Column(Integer, nullable=False)
     vendor = Column(String(32), nullable=False)
+    interfaces = relationship("Interface")
+    nodes = relationship('Node')
+    prefix = relationship('Prefix')
