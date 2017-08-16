@@ -14,6 +14,7 @@ sys.path.insert(0, os.getcwd())
 
 manager = Manager(create_app)
 
+
 @manager.command
 def createdb(drop_first=False):
     """Creates the database."""

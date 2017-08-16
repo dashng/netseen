@@ -13,16 +13,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
 import pkgutil
-from flask import Blueprint
 
 BLUEP_PRINTS_TYPE = ['BLUE_PRINT', 'BLUE_PRINT_PUBLIC']
 BLUEPRINTS = []
 __all__ = []
 
 # dynamical load sub blueprints
-for loader, module_name, is_pkg in  pkgutil.walk_packages(__path__):
+for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
     __all__.append(module_name)
     module = loader.find_module(module_name).load_module(module_name)
     for bpt in BLUEP_PRINTS_TYPE:
