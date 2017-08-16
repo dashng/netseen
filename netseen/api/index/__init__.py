@@ -13,21 +13,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
-from flask import jsonify
 
-main_blueprint = Blueprint('/', __name__)
+from netseen.lib.blue_print import blue_print
+from netseen.api.index.index import Index
 
 
-@main_blueprint.route('/')
-def index():
-    """Serve client-side application."""
-    return jsonify(
-        {
-            'status': True,
-            'data': {
-                'updated': "2017-02-02T00:00:00Z",
-                'version': "v1"
-            }
-        }
-    )
+BLUE_PRINT_PUBLIC = blue_print('engine_status', 'templates', [
+    [Index, '/', "/"]
+])

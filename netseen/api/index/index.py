@@ -13,4 +13,28 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-DATABASE_URL: 'mysql+pymysql://root:cisco123@localhost:3306/test'
+
+from flask_restful import Resource
+from netseen.lib.response import JsonRes
+
+
+class Index(Resource):
+    '''
+    net seen engine info
+    '''
+
+    def __init__(self):
+        super(Index, self).__init__()
+
+    def get(self):
+        '''
+        index
+        '''
+        msg = {
+            'status': True,
+            'data': {
+                'updated': "2017-02-02T00:00:00Z",
+                'version': "v1"
+            }
+        }
+        return JsonRes(success=True, content=msg)

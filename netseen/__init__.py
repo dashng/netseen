@@ -14,31 +14,29 @@
 #    under the License.
 
 import os
-
 from flask import Flask
-
-from netseen.config import config
-from netseen.extensions import db
-
-# Import models so that they are registered with SQLAlchemy
-# from . import models  # noqa
+from netseen.lib.yaml_parser import YamlParser
+# from netseen.config import config
+from netseen.api import BLUEPRINTS
 
 
 def create_app(config_name=None):
-    """create application"""
-    if config_name is None:
-        config_name = os.environ.get('NETSEEN_CONFIG', 'development')
+    '''
+    create flask application
+    '''
+    # if config_name is None:
+    #     config_name = os.environ.get('NETSEEN_CONFIG', 'development')
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
 
-    # Initialize flask extensions
-    db.init_app(app)
+    cfg_file_path = \
+        os.path.normpath(
+            os.path.join(
+                os.path.abspath(__file__),
+                "../", "./app.yaml"))
 
-    # Register blueprint
-    from netseen.index import main_blueprint
-    app.register_blueprint(main_blueprint, url_prefix='/')
-
-    from netseen.api import api_blueprint
-    app.register_blueprint(api_blueprint, url_prefix='/api')
-
+    cfg_object = YamlParser(path=cfg_file_path).yaml_to_object()
+    app.config.from_object(cfg_object)
+    for blueprint in BLUEPRINTS:
+        url_prefix = '/' if blueprint[1] == 'BLUE_PRINT_PUBLIC' else '/api'
+        app.register_blueprint(blueprint[0], url_prefix=url_prefix)
     return app
