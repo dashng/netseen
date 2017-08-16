@@ -14,3 +14,7 @@
 #    under the License.
 
 DATABASE_URL: 'mysql+pymysql://root:cisco123@localhost:3306/test'
+
+SECRET_KEY: '51f52814-0071-11e6-a247-000ec6c2372c'
+
+DEBUG: True
