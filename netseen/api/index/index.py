@@ -13,21 +13,28 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Blueprint
-from flask import jsonify
 
-main_blueprint = Blueprint('/', __name__)
+from flask_restful import Resource
+from netseen.lib.response import JsonRes
 
 
-@main_blueprint.route('/')
-def index():
-    """Serve client-side application."""
-    return jsonify(
-        {
+class Index(Resource):
+    '''
+    net seen engine info
+    '''
+
+    def __init__(self):
+        super(Index, self).__init__()
+
+    def get(self):
+        '''
+        index
+        '''
+        msg = {
             'status': True,
             'data': {
                 'updated': "2017-02-02T00:00:00Z",
                 'version': "v1"
             }
         }
-    )
+        return JsonRes(success=True, content=msg)
