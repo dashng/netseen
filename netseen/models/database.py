@@ -14,8 +14,10 @@
 #    under the License.
 
 import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from netseen.models.router import Router  # noqa
 from netseen.models.node import Node  # noqa
 from netseen.models.interface import Interface  # noqa

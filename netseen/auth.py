@@ -16,8 +16,8 @@
 from flask import g, jsonify, session
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 
-from .extensions import db
-from .models.user import User
+from netseen.extensions import db
+from netseen.models.user import User
 
 
 # Authentication objects for username/password auth, token auth, and a
