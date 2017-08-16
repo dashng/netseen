@@ -37,5 +37,6 @@ def create_app(config_name=None):
     cfg_object = YamlParser(path=cfg_file_path).yaml_to_object()
     app.config.from_object(cfg_object)
     for blueprint in BLUEPRINTS:
-        app.register_blueprint(blueprint[0], url_prefix='/api')
+        url_prefix = '/' if blueprint[1] == 'BLUE_PRINT_PUBLIC' else '/api'
+        app.register_blueprint(blueprint[0], url_prefix=url_prefix)
     return app
