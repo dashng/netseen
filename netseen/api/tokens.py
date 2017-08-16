@@ -13,10 +13,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import jsonify, g
+from flask import g
+from flask import jsonify
 
+from netseen.auth import token_auth
+from netseen.auth import basic_auth
 from netseen.extensions import db
-from netseen.auth import basic_auth, token_auth
 from netseen.api import api_blueprint
 
 

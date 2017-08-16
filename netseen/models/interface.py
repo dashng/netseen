@@ -13,8 +13,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-
 from sqlalchemy import Column, Integer, String, ForeignKey
+
 from netseen.models.table import Table
 
 

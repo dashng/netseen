@@ -15,7 +15,9 @@
 
 import datetime
 
-from flask import url_for as _url_for, current_app, _request_ctx_stack
+from flask import _request_ctx_stack
+from flask import current_app
+from flask import url_for as _url_for
 
 
 def timestamp():
