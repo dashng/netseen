@@ -13,8 +13,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+# database url
 DATABASE_URL: 'mysql+pymysql://root:cisco123@localhost:3306/test'
 
+# flask secret key
 SECRET_KEY: '51f52814-0071-11e6-a247-000ec6c2372c'
 
+# debug mode
 DEBUG: True
