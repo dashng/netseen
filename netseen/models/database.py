@@ -24,7 +24,7 @@ from netseen.models.interface import Interface  # noqa
 from netseen.models.link import Link  # noqa
 from netseen.models.prefix import Prefix  # noqa
 from netseen.models.table import BASE
-from netseen.lib.yaml_parser import YamlParser
+from netseen.common.yaml_parser import YamlParser
 
 
 class DataBase(object):

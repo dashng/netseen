@@ -15,7 +15,7 @@
 
 import os
 from flask import Flask
-from netseen.lib.yaml_parser import YamlParser
+from netseen.common.yaml_parser import YamlParser
 # from netseen.config import config
 from netseen.api import BLUEPRINTS
 
