@@ -35,7 +35,7 @@ class SnmpPoll(object):
                  priv_key=None,
                  version='2c',
                  snmp_port=161
-                ):
+                 ):
         super(SnmpPoll, self).__init__()
         self.router_ip = router_ip
         self.community = community
