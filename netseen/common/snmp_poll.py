@@ -13,7 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-
 from pysnmp.hlapi import \
     bulkCmd, getCmd, nextCmd, SnmpEngine, CommunityData, UdpTransportTarget, \
     ContextData, ObjectType, ObjectIdentity, UsmUserData
@@ -22,28 +21,36 @@ from pysnmp.hlapi import \
 class SnmpPoll(object):
     '''
     Snmp Mib Poller
+    v2c:
+    :router_ip: device ip string format
+    :community: snmp community
+    v3:
+    :user_name: user name auth
+    :auth_key: auth key auth
+    :priv_key: privacy key auth
+    :version: snmp verison ['2c', '3']
+    :snmp_port: default set to be 161
     '''
     SNMP_VERSION_2C = '2c'
     SNMP_VERSION_3 = '3'
     snmp_ret = None
+    router_ip = None
+    community = None
+    snmp_port = 161
+    user_name = None
+    auth_key = None
+    priv_key = None
+    version = None
 
-    def __init__(self,
-                 router_ip,
-                 community,
-                 user_name=None,
-                 auth_key=None,
-                 priv_key=None,
-                 version='2c',
-                 snmp_port=161
-                 ):
+    def __init__(self, **kwargs):
         super(SnmpPoll, self).__init__()
-        self.router_ip = router_ip
-        self.community = community
-        self.snmp_port = snmp_port
-        self.user_name = user_name
-        self.auth_key = auth_key
-        self.priv_key = priv_key
-        self.version = version
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+                raise TypeError(
+                    "%r is an invalid keyword argument for %s" %
+                    (k, cls_.__name__))
+            setattr(self, k, kwargs[k])
 
     def _to_list(self):
         '''
@@ -118,7 +125,7 @@ class SnmpPoll(object):
 
 
 if __name__ == '__main__':
-    snmp_poll = SnmpPoll('10.75.44.119', 'cisco')
+    snmp_poll = SnmpPoll(router_ip='10.75.44.119', community='cisco')
     print snmp_poll.next_cmd('1.3.6.1.2.1.2.2.1.2')
-    print snmp_poll.bulk_cmd('1.3.6.1.2.1.2.2.1.2')
-    print snmp_poll.get_cmd('1.3.6.1.2.1.2.2.1.2')
+    # print snmp_poll.bulk_cmd('1.3.6.1.2.1.2.2.1.2')
+    # print snmp_poll.get_cmd('1.3.6.1.2.1.2.2.1.2')
