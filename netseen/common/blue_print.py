@@ -13,11 +13,23 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-# database url
-DATABASE_URL: 'mysql+pymysql://root:cisco123@localhost:3306/test'
 
-# flask secret key
-SECRET_KEY: '51f52814-0071-11e6-a247-000ec6c2372c'
+from flask import Blueprint
+from flask_restful import Api
 
-# debug mode
-DEBUG: True
+
+def blue_print(blue_print_name, template_folder, resources):
+    '''
+    blue print
+    '''
+    bpt = Blueprint(blue_print_name, __name__, template_folder=template_folder)
+
+    api = Api(bpt)
+
+    for res in resources:
+        if isinstance(res, list):
+            api.add_resource(*res)
+        else:
+            api.add_resource(*res['args'], **res['kwargs'])
+
+    return bpt

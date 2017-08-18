@@ -13,11 +13,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-# database url
-DATABASE_URL: 'mysql+pymysql://root:cisco123@localhost:3306/test'
 
-# flask secret key
-SECRET_KEY: '51f52814-0071-11e6-a247-000ec6c2372c'
+class NSExcept(Exception):
+    '''
+    customize exception
+    '''
 
-# debug mode
-DEBUG: True
+    # def __init__(self, err=None):
+    #     super(NSExcept, self).__init__(err)
+
+    def log(self):
+        '''
+        log except msg
+        '''
+        pass

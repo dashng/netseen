@@ -15,7 +15,7 @@
 
 
 from flask_restful import Resource
-from netseen.lib.response import JsonRes
+from netseen.common.response import JsonRes
 
 
 class Index(Resource):

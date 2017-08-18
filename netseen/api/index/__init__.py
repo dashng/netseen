@@ -14,10 +14,27 @@
 #    under the License.
 
 
-from netseen.lib.blue_print import blue_print
+from netseen.common.blue_print import blue_print
 from netseen.api.index.index import Index
 
 
 BLUE_PRINT_PUBLIC = blue_print('engine_status', 'templates', [
     [Index, '/', "/"]
 ])
+
+# BLUE_PRINT = blue_print('as_whitelist', 'templates', [
+#     {
+#         'args': [
+#             ASWhiteList,
+#             '/as_whitelist/<any:uid>'
+#         ],
+#         'kwargs': {"endpoint": "/as_whitelist"}
+#     },
+#     {
+#         'args': [
+#             AS,
+#             '/as'
+#         ],
+#         'kwargs': {"endpoint": "/as"}
+#     }
+# ])
