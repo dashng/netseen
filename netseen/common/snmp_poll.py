@@ -13,6 +13,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import re
 import logging
 from pysnmp.hlapi import \
     bulkCmd, getCmd, nextCmd, SnmpEngine, CommunityData, UdpTransportTarget, \
@@ -63,7 +64,7 @@ class SnmpPoll(object):
                     (k, cls_.__name__))
             setattr(self, k, kwargs[k])
 
-    def _to_list(self):
+    def _to_list(self, oid=None):
         '''
         parse snmp return & return list
         '''
@@ -81,10 +82,11 @@ class SnmpPoll(object):
                 break
             else:
                 for var_bind in var_binds:
-                    mib_ret.append([x.prettyPrint() for x in var_bind])
-            invalid_msg = 'No Such Instance currently exists at this OID'
-            mib_ret = [mib for mib in mib_ret if invalid_msg.upper()
-                       not in str(mib[-1]).upper()]
+                    name, value = var_bind
+                    if value:
+                        mib_ret.append([str(name), str(value)])
+            if oid:
+                mib_ret = [mib for mib in mib_ret if re.match(r'%s'%oid, str(mib[-2]))]
         return mib_ret
 
     def get_auth(self):
@@ -136,7 +138,7 @@ class SnmpPoll(object):
                                 non_repeaters, max_repeaters,
                                 ObjectType(ObjectIdentity(oid)),
                                 maxCalls=10)
-        return self._to_list()
+        return self._to_list(oid)
 
     def get_mib_by_oid(self, oid):
         '''
@@ -148,6 +150,6 @@ class SnmpPoll(object):
 
 if __name__ == '__main__':
     POLLER = SnmpPoll(router_ip='10.75.44.119', community='cisco')
-    OID_STR = POLLER.oid_list.get('sys_name')
+    OID_STR = POLLER.oid_list.get('if_list')
     # print POLLER.next_cmd(OID_STR)
     print POLLER.get_mib_by_oid(OID_STR)
