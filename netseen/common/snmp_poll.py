@@ -13,6 +13,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import logging
 from pysnmp.hlapi import \
     bulkCmd, getCmd, nextCmd, SnmpEngine, CommunityData, UdpTransportTarget, \
     ContextData, ObjectType, ObjectIdentity, UsmUserData
@@ -31,6 +32,7 @@ class SnmpPoll(object):
     :version: snmp verison ['2c', '3']
     :snmp_port: default set to be 161
     '''
+    logger = logging.getLogger('snmp.logger')
     SNMP_VERSION_2C = '2c'
     SNMP_VERSION_3 = '3'
     snmp_ret = None
@@ -40,7 +42,16 @@ class SnmpPoll(object):
     user_name = None
     auth_key = None
     priv_key = None
-    version = None
+    version = SNMP_VERSION_2C
+    oid_list = {
+        'sys_name': '1.3.6.1.2.1.1.5.0',
+        'if_descr': '1.3.6.1.2.1.2.2.1.2.%s',
+        'if_name': '1.3.6.1.2.1.31.1.1.1.1.%s',
+        'if_speed': '1.3.6.1.2.1.2.2.1.5.%s',
+        'if_number': '1.3.6.1.2.1.2.1.0.%s',
+        'if_list': '1.3.6.1.2.1.2.2.1.2',
+        'if_ip': '1.3.6.1.2.1.4.20.1.2.%s'
+    }
 
     def __init__(self, **kwargs):
         super(SnmpPoll, self).__init__()
@@ -64,12 +75,16 @@ class SnmpPoll(object):
             if error_indication:
                 break
             elif error_status:
-                print('%s at %s' % (error_status.prettyPrint(),
-                                    error_index and var_binds[int(error_index) - 1][0] or '?'))
+                self.logger.error('%s at %s',
+                                  error_status.prettyPrint(),
+                                  (error_index and var_binds[int(error_index) - 1][0] or '?'))
                 break
             else:
                 for var_bind in var_binds:
                     mib_ret.append([x.prettyPrint() for x in var_bind])
+            invalid_msg = 'No Such Instance currently exists at this OID'
+            mib_ret = [mib for mib in mib_ret if invalid_msg.upper()
+                       not in str(mib[-1]).upper()]
         return mib_ret
 
     def get_auth(self):
@@ -123,9 +138,16 @@ class SnmpPoll(object):
                                 maxCalls=10)
         return self._to_list()
 
+    def get_mib_by_oid(self, oid):
+        '''
+        get snmp mib by oid, compatible getCmd & bulkCmd
+        '''
+        mib_ret = self.get_cmd(oid) or self.bulk_cmd(oid)
+        return mib_ret
+
 
 if __name__ == '__main__':
-    snmp_poll = SnmpPoll(router_ip='10.75.44.119', community='cisco')
-    print snmp_poll.next_cmd('1.3.6.1.2.1.2.2.1.2')
-    # print snmp_poll.bulk_cmd('1.3.6.1.2.1.2.2.1.2')
-    # print snmp_poll.get_cmd('1.3.6.1.2.1.2.2.1.2')
+    POLLER = SnmpPoll(router_ip='10.75.44.119', community='cisco')
+    OID_STR = POLLER.oid_list.get('sys_name')
+    # print POLLER.next_cmd(OID_STR)
+    print POLLER.get_mib_by_oid(OID_STR)
