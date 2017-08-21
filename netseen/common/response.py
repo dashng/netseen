@@ -56,7 +56,6 @@ class JsonRes(Response):
             elif isinstance(err, basestring):
                 err_msg = err
             if isinstance(info, basestring):
-                print info, err_msg
                 if '%s' not in info:
                     info = '%s, %s' % (info, err_msg)
                 else:
