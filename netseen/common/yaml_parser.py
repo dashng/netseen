@@ -14,8 +14,9 @@
 #    under the License.
 
 import json
-import yaml
 import os
+
+import yaml
 
 YAML_FILE = os.path.normpath(
     os.path.join(

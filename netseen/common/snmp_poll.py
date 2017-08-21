@@ -14,7 +14,7 @@
 #    under the License.
 
 import re
-import logging
+from netseen.common.logger import Logger
 from pysnmp.hlapi import \
     bulkCmd, getCmd, nextCmd, SnmpEngine, CommunityData, UdpTransportTarget, \
     ContextData, ObjectType, ObjectIdentity, UsmUserData
@@ -33,7 +33,7 @@ class SnmpPoll(object):
     :version: snmp verison ['2c', '3']
     :snmp_port: default set to be 161
     '''
-    logger = logging.getLogger('snmp.logger')
+    logger = Logger(name=__name__).get_logger()
     SNMP_VERSION_2C = '2c'
     SNMP_VERSION_3 = '3'
     snmp_ret = None
@@ -86,7 +86,8 @@ class SnmpPoll(object):
                     if value:
                         mib_ret.append([str(name), str(value)])
             if oid:
-                mib_ret = [mib for mib in mib_ret if re.match(r'%s'%oid, str(mib[-2]))]
+                mib_ret = [mib for mib in mib_ret if re.match(
+                    r'%s' % oid, str(mib[-2]))]
         return mib_ret
 
     def get_auth(self):
