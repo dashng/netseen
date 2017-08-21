@@ -25,6 +25,7 @@ YAML_FILE = os.path.normpath(
     )
 )
 
+
 class YamlParser(object):
     '''
     yaml parser util
