@@ -13,8 +13,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -41,13 +39,7 @@ class DataBase(object):
         get data base url
         '''
         if not self.db_url:
-            cfg_file_path = \
-                os.path.normpath(
-                    os.path.join(
-                        os.path.abspath(__file__),
-                        "../../", "./app.yaml"))
-            self.db_url = YamlParser(
-                path=cfg_file_path).yaml_to_dict().get('DATABASE_URL')
+            self.db_url = YamlParser().yaml_to_dict().get('DATABASE_URL')
         return self.db_url
 
     def get_engine(self):

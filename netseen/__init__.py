@@ -13,10 +13,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
 from flask import Flask
+
 from netseen.common.yaml_parser import YamlParser
-# from netseen.config import config
 from netseen.api import BLUEPRINTS
 
 
@@ -24,17 +23,8 @@ def create_app(config_name=None):
     '''
     create flask application
     '''
-    # if config_name is None:
-    #     config_name = os.environ.get('NETSEEN_CONFIG', 'development')
     app = Flask(__name__)
-
-    cfg_file_path = \
-        os.path.normpath(
-            os.path.join(
-                os.path.abspath(__file__),
-                "../", "./app.yaml"))
-
-    cfg_object = YamlParser(path=cfg_file_path).yaml_to_object()
+    cfg_object = YamlParser().yaml_to_object()
     app.config.from_object(cfg_object)
     for blueprint in BLUEPRINTS:
         url_prefix = '/' if blueprint[1] == 'BLUE_PRINT_PUBLIC' else '/api'

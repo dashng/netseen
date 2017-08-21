@@ -102,4 +102,4 @@ ENV/
 *.sqlite*
 .vscode/
 doc/.DS_Store
-netseen/app.yaml
+netseen/netseen.yaml

@@ -15,6 +15,14 @@
 
 import json
 import yaml
+import os
+
+YAML_FILE = os.path.normpath(
+    os.path.join(
+        os.path.abspath(__file__),
+        "../../", "./netseen.yaml"
+    )
+)
 
 
 class YamlParser(object):
@@ -22,7 +30,7 @@ class YamlParser(object):
     yaml parser util
     '''
 
-    def __init__(self, path=""):
+    def __init__(self, path=YAML_FILE):
         self._path = path
         self._docs = self._load_yaml()
 

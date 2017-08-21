@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import os
 import sys
 
@@ -21,9 +22,12 @@ def createdb(drop_first=False):
     # if drop_first:
     #     db.drop_all()
     # db.create_all()
-    if drop_first:
-        DataBase().drop_all()
-    DataBase().create_all()
+    try:
+        if drop_first:
+            DataBase().drop_all()
+        DataBase().create_all()
+    except Exception as e:
+        print(e)
 
 
 # @manager.command
