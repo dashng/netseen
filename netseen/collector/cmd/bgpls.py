@@ -13,20 +13,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask import Flask
+"""start service"""
 
-from netseen.common.yaml_parser import YamlParser
-from netseen.api import BLUEPRINTS
+from __future__ import print_function
+
+from yabgp.agent import prepare_service
+
+from netseen.collector.bgp.handler import TopoHandler
 
 
-def create_app(config_name=None):
-    '''
-    create flask application
-    '''
-    app = Flask(__name__)
-    cfg_object = YamlParser().yaml_to_object()
-    app.config.from_object(cfg_object)
-    for blueprint in BLUEPRINTS:
-        url_prefix = '/' if blueprint[1] == 'BLUE_PRINT_PUBLIC' else '/api'
-        app.register_blueprint(blueprint[0], url_prefix=url_prefix)
-    return app
+def main():
+    """main function
+    """
+    try:
+        handler = TopoHandler()
+        prepare_service(handler=handler)
+    except Exception as e:
+        print(e)

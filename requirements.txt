@@ -30,3 +30,5 @@ six==1.10.0
 SQLAlchemy==1.1.11
 Werkzeug==0.12.2
 wrapt==1.10.11
+yabgp==0.3.0
+PyMySQL==0.7.11
