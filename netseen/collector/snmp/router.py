@@ -29,13 +29,16 @@ except ImportError:
     from netseen.models.router import Router as RouterTable
     from netseen.models.database import DataBase
 
+def test():
+    yield '0000'
+
 
 class Router(object):
     '''
     router class
     '''
 
-    session = (DataBase().get_session())()
+    database = DataBase()
 
     def __init__(self):
         super(Router, self).__init__()
@@ -45,21 +48,33 @@ class Router(object):
         add router
         '''
         router = RouterTable(**kwargs)
-        self.session.add(router)
-        self.session.commit()
-        self.session.close()
+        with (self.database.session_scope()) as session:
+            session.add(router)
 
     def delete(self, **kwargs):
         '''
         del router
         '''
-        self.session.remove(kwargs)
+        with (self.database.session_scope()) as session:
+            session.query(RouterTable).filter_by(**kwargs).delete()
 
-    def get(self, *args, **kwargs):
+    def get(self, **kwargs):
         '''
         get router
         '''
-        pass
+        routers = None
+        with (self.database.session_scope()) as session:
+            routers = session.query(RouterTable).filter_by(**kwargs).all()
+        return routers
+
+    def update(self, **kwargs):
+        '''
+        update router
+        '''
+        filters = kwargs.get('filters')
+        values = kwargs.get('values')
+        with (self.database.session_scope()) as session:
+            session.query(RouterTable).filter_by(**filters).update(values)
 
 
 if __name__ == '__main__':
@@ -71,4 +86,6 @@ if __name__ == '__main__':
         'memory': 999,
         'vendor': 'cisco'
     }
-    ROUTER_CLS.add(**ARGS)
+    # ROUTER_CLS.add(**ARGS)
+    print ROUTER_CLS.get(ip_int=999900)
+    # ROUTER_CLS.delete(ip_int=999900)
