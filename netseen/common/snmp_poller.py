@@ -20,7 +20,7 @@ from pysnmp.hlapi import \
     ContextData, ObjectType, ObjectIdentity, UsmUserData
 
 
-class SnmpPoll(object):
+class SnmpPoller(object):
     '''
     Snmp Mib Poller
     v2c:
@@ -51,11 +51,12 @@ class SnmpPoll(object):
         'if_speed': '1.3.6.1.2.1.2.2.1.5.%s',
         'if_number': '1.3.6.1.2.1.2.1.0.%s',
         'if_list': '1.3.6.1.2.1.2.2.1.2',
-        'if_ip': '1.3.6.1.2.1.4.20.1.2.%s'
+        'if_ip': '1.3.6.1.2.1.4.20.1.2',
+        'vendor': '1.3.6.1.2.1.1.1.0'
     }
 
     def __init__(self, **kwargs):
-        super(SnmpPoll, self).__init__()
+        super(SnmpPoller, self).__init__()
         cls_ = type(self)
         for k in kwargs:
             if not hasattr(cls_, k):
@@ -83,8 +84,10 @@ class SnmpPoll(object):
             else:
                 for var_bind in var_binds:
                     name, value = var_bind
+                    name = str(name)
+                    value = str(value)
                     if value:
-                        mib_ret.append([str(name), str(value)])
+                        mib_ret.append([name, value])
             if oid:
                 mib_ret = [mib for mib in mib_ret if re.match(
                     r'%s' % oid, str(mib[-2]))]
@@ -148,9 +151,24 @@ class SnmpPoll(object):
         mib_ret = self.get_cmd(oid) or self.bulk_cmd(oid)
         return mib_ret
 
+    def get_oid(self, oid_type):
+        '''
+        get common snmp oid
+        oid_list = {
+            'sys_name': '1.3.6.1.2.1.1.5.0',
+            'if_descr': '1.3.6.1.2.1.2.2.1.2.%s',
+            'if_name': '1.3.6.1.2.1.31.1.1.1.1.%s',
+            'if_speed': '1.3.6.1.2.1.2.2.1.5.%s',
+            'if_number': '1.3.6.1.2.1.2.1.0.%s',
+            'if_list': '1.3.6.1.2.1.2.2.1.2',
+            'if_ip': '1.3.6.1.2.1.4.20.1.2.%s'
+        }
+        '''
+        return self.oid_list.get(oid_type)
+
 
 if __name__ == '__main__':
-    POLLER = SnmpPoll(router_ip='10.75.44.119', community='cisco')
-    OID_STR = POLLER.oid_list.get('if_list')
+    POLLER = SnmpPoller(router_ip='10.75.44.119', community='cisco')
+    OID_STR = POLLER.oid_list.get('vendor')
     # print POLLER.next_cmd(OID_STR)
     print POLLER.get_mib_by_oid(OID_STR)

@@ -16,7 +16,7 @@
 import ipaddr
 
 
-class IPFormatter(object):
+class IPConversion(object):
     '''
     ip formatter
     '''
@@ -36,7 +36,7 @@ class IPFormatter(object):
         except StandardError:
             return False
 
-    def ip_int(self, *args):
+    def str_to_int(self, *args):
         '''
         ip str addr to integer
         '''
@@ -48,7 +48,7 @@ class IPFormatter(object):
         except Exception:
             raise ValueError('Invalid ip string')
 
-    def ip_str(self, *args):
+    def int_to_str(self, *args):
         '''
         ip int to str
         '''
@@ -62,5 +62,5 @@ class IPFormatter(object):
 
 
 if __name__ == '__main__':
-    IF = IPFormatter()
-    print IF.ip_str(3684565272)
+    IF = IPConversion()
+    print IF.int_to_str(3684565272)

@@ -16,6 +16,8 @@
 try:
     from netseen.models.router import Router as RouterTable
     from netseen.models.database import DataBase
+    from netseen.common.ip_conversion import IPConversion
+    from netseen.common.snmp_poller import SnmpPoller
 except ImportError:
     import os
     import sys
@@ -28,6 +30,8 @@ except ImportError:
     sys.path.insert(0, PATH)
     from netseen.models.router import Router as RouterTable
     from netseen.models.database import DataBase
+    from netseen.common.ip_conversion import IPConversion
+    from netseen.common.snmp_poller import SnmpPoller
 
 
 class Router(object):
@@ -45,6 +49,9 @@ class Router(object):
         add router
         '''
         router = RouterTable(**kwargs)
+        ip_int = kwargs.get('ip_int')
+        ip_str = IPConversion().int_to_str(ip_int)
+        SnmpPoller(router_ip=ip_str, community="")
         with (self.database.session_scope()) as session:
             session.add(router)
 
@@ -81,6 +88,73 @@ class Router(object):
         '''
         return self.database, RouterTable
 
+    def poll_ifaces(self, router_ip, community):
+        '''
+        poll router ifaces
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        oid = poller.get_oid('if_list')
+        ifaces = poller.get_mib_by_oid(oid)
+        ifaces = [
+            {
+                'oid': (iface[0]).split('.')[-1],
+                'name': iface[1]
+            }
+            for iface in ifaces]
+        return ifaces
+
+    def poll_iface_ip(self, router_ip, community):
+        '''
+        poll iface ip
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        oid = poller.get_oid('if_ip')
+        ifaces_ip = poller.get_mib_by_oid(oid)
+        ifaces_ip = [
+            {
+                'ip': '.'.join((iface[0]).split('.')[-4:]),
+                'oid': iface[1]
+            }
+            for iface in ifaces_ip]
+        return ifaces_ip
+
+    def poll_iface_speed(self, router_ip, community, if_oid):
+        '''
+        poll iface speed
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        oid = poller.get_oid('if_speed')
+        ifaces_speed = poller.get_mib_by_oid(oid % if_oid)
+        ifaces = [
+            {
+                'oid': (iface[0]).split('.')[-1],
+                'speed': iface[1]
+            }
+            for iface in ifaces_speed]
+        return ifaces
+
+    def poll_router_hostname(self, router_ip, community):
+        '''
+        poll router host name
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        oid = poller.get_oid('sys_name')
+        router = poller.get_mib_by_oid(oid)
+        if not router:
+            return None
+        return router.pop()[1]
+
+    def poll_router_vendor(self, router_ip, community):
+        '''
+        poll router vendor
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        oid = poller.get_oid('vendor')
+        router = poller.get_mib_by_oid(oid)
+        if not router:
+            return None
+        return router.pop()[1]
+
 
 if __name__ == '__main__':
     ROUTER_CLS = Router()
@@ -92,5 +166,10 @@ if __name__ == '__main__':
         'vendor': 'cisco'
     }
     # ROUTER_CLS.add(**ARGS)
-    print ROUTER_CLS.get(ip_int=999900)
+    # print ROUTER_CLS.get(ip_int=999900)
     # ROUTER_CLS.delete(ip_int=999900)
+    # print ROUTER_CLS.poll_ifaces('10.75.44.119', 'cisco')
+    # print ROUTER_CLS.poll_iface_speed('10.75.44.119', 'cisco', '3')
+    # print ROUTER_CLS.poll_iface_ip('10.75.44.119', 'cisco')
+    # print ROUTER_CLS.poll_router_hostname('10.75.44.119', 'cisco')
+    # print ROUTER_CLS.poll_router_vendor('10.75.44.119', 'cisco')
