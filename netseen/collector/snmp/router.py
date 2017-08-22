@@ -29,9 +29,6 @@ except ImportError:
     from netseen.models.router import Router as RouterTable
     from netseen.models.database import DataBase
 
-def test():
-    yield '0000'
-
 
 class Router(object):
     '''
@@ -70,11 +67,19 @@ class Router(object):
     def update(self, **kwargs):
         '''
         update router
+        :filters: {attrs...}
+        :values: {values...}
         '''
         filters = kwargs.get('filters')
         values = kwargs.get('values')
         with (self.database.session_scope()) as session:
             session.query(RouterTable).filter_by(**filters).update(values)
+
+    def get_db_model(self):
+        '''
+        get database object, router table model
+        '''
+        return self.database, RouterTable
 
 
 if __name__ == '__main__':
