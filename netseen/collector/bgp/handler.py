@@ -14,8 +14,29 @@
 #    under the License.
 
 from __future__ import print_function
+import logging
+import os
 
+from oslo_config import cfg
 from yabgp.handler import BaseHandler
+
+from netseen.models.database import DataBase
+
+CONF = cfg.CONF
+
+LOG = logging.getLogger(__name__)
+
+MSG_PROCESS_OPTS = [
+    cfg.StrOpt(
+        'connection',
+        default=os.environ.get(
+            'DATABASE_URL', 'mysql+pymysql://root:root@localhost:3306/test'),
+        # secret=True,
+        help='database connection url'
+    )
+]
+
+CONF.register_cli_opts(MSG_PROCESS_OPTS, group='database')
 
 
 class TopoHandler(BaseHandler):
@@ -24,9 +45,12 @@ class TopoHandler(BaseHandler):
 
     def __init__(self):
         super(TopoHandler, self).__init__()
+        self.db_session = None
 
     def init(self):
-        pass
+        """some init stuff"""
+        LOG.info('init database session')
+        self.db_session = DataBase(db_url=CONF.database.connection).get_session()
 
     def on_update_error(self, peer, timestamp, msg):
         print('[-] UPDATE ERROR,', msg)

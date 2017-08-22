@@ -30,5 +30,3 @@ class Router(Table):
     memory = Column(Integer, nullable=False)
     vendor = Column(String(32), nullable=False)
     interfaces = relationship("Interface")
-    nodes = relationship('Node')
-    prefix = relationship('Prefix')

@@ -1,5 +1,6 @@
 language: python
 env:
+  - TOXENV=py27
   - TOXENV=pep8
   - TOXENV=docs
 
