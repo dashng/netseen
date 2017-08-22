@@ -72,3 +72,6 @@ class Interface(object):
         get database object, router table model
         '''
         return self.database, InterfaceTable
+
+if __name__ == '__main__':
+    pass

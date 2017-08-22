@@ -47,6 +47,11 @@ class Router(object):
     def add(self, **kwargs):
         '''
         add router
+        :ip_int: ip int format
+        :host_name: router host_name
+        :cpu: cpu
+        :memory: memory
+        :vendor: router vendor
         '''
         router = RouterTable(**kwargs)
         ip_int = kwargs.get('ip_int')
@@ -155,16 +160,43 @@ class Router(object):
             return None
         return router.pop()[1]
 
+    def poll_router_memory(self, router_ip, community):
+        '''
+        poll router memory
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        # # oid = poller.get_oid('vendor')
+        # oid = '1.3.6.1.4.1.2021.4.3.0'
+        # router = poller.get_mib_by_oid(oid)
+        # if not router:
+        #     return None
+        # return router.pop()[1]
+        return 11
+
+    def poll_router_cpu(self, router_ip, community):
+        '''
+        poll router memory
+        '''
+        poller = SnmpPoller(router_ip=router_ip, community=community)
+        # # oid = poller.get_oid('vendor')
+        # oid = '1.3.6.1.4.1.2021.4.3.0'
+        # router = poller.get_mib_by_oid(oid)
+        # if not router:
+        #     return None
+        # return router.pop()[1] 
+        return 500
+
+
 
 if __name__ == '__main__':
     ROUTER_CLS = Router()
-    ARGS = {
-        'ip_int': 999900,
-        'host_name': 'test_router4',
-        'cpu': 80,
-        'memory': 999,
-        'vendor': 'cisco'
-    }
+    # ARGS = {
+    #     'ip_int': 999900,
+    #     'host_name': 'test_router4',
+    #     'cpu': 80,
+    #     'memory': 999,
+    #     'vendor': 'cisco'
+    # }
     # ROUTER_CLS.add(**ARGS)
     # print ROUTER_CLS.get(ip_int=999900)
     # ROUTER_CLS.delete(ip_int=999900)
@@ -173,3 +205,4 @@ if __name__ == '__main__':
     # print ROUTER_CLS.poll_iface_ip('10.75.44.119', 'cisco')
     # print ROUTER_CLS.poll_router_hostname('10.75.44.119', 'cisco')
     # print ROUTER_CLS.poll_router_vendor('10.75.44.119', 'cisco')
+    print ROUTER_CLS.poll_router_memory('10.75.44.119', 'cisco')

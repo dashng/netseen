@@ -17,9 +17,10 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+
+from netseen.models.interface import Interface  # noqa
 from netseen.models.router import Router  # noqa
 from netseen.models.node import Node  # noqa
-from netseen.models.interface import Interface  # noqa
 from netseen.models.link import Link  # noqa
 from netseen.models.prefix import Prefix  # noqa
 from netseen.models.table import BASE
