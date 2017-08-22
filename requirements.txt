@@ -10,6 +10,7 @@ Flask-HTTPAuth==3.2.3
 Flask-RESTful==0.3.6
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.2
+ipaddr==2.1.11
 isort==4.2.15
 itsdangerous==0.24
 Jinja2==2.9.6
@@ -19,6 +20,7 @@ mccabe==0.6.1
 ply==3.10
 pyasn1==0.3.2
 pycryptodome==3.4.6
+PyMySQL==0.7.11
 pysmi==0.1.3
 pysnmp==4.3.9
 python-dateutil==2.6.1
@@ -31,4 +33,3 @@ SQLAlchemy==1.1.11
 Werkzeug==0.12.2
 wrapt==1.10.11
 yabgp==0.3.0
-PyMySQL==0.7.11
