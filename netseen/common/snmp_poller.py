@@ -13,39 +13,59 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-
+import re
+from netseen.common.logger import Logger
 from pysnmp.hlapi import \
     bulkCmd, getCmd, nextCmd, SnmpEngine, CommunityData, UdpTransportTarget, \
     ContextData, ObjectType, ObjectIdentity, UsmUserData
 
 
-class SnmpPoll(object):
+class SnmpPoller(object):
     '''
     Snmp Mib Poller
+    v2c:
+    :router_ip: device ip string format
+    :community: snmp community
+    v3:
+    :user_name: user name auth
+    :auth_key: auth key auth
+    :priv_key: privacy key auth
+    :version: snmp verison ['2c', '3']
+    :snmp_port: default set to be 161
     '''
+    logger = Logger(name=__name__).get_logger()
     SNMP_VERSION_2C = '2c'
     SNMP_VERSION_3 = '3'
     snmp_ret = None
+    router_ip = None
+    community = None
+    snmp_port = 161
+    user_name = None
+    auth_key = None
+    priv_key = None
+    version = SNMP_VERSION_2C
+    oid_list = {
+        'sys_name': '1.3.6.1.2.1.1.5.0',
+        'if_descr': '1.3.6.1.2.1.2.2.1.2.%s',
+        'if_name': '1.3.6.1.2.1.31.1.1.1.1.%s',
+        'if_speed': '1.3.6.1.2.1.2.2.1.5.%s',
+        'if_number': '1.3.6.1.2.1.2.1.0.%s',
+        'if_list': '1.3.6.1.2.1.2.2.1.2',
+        'if_ip': '1.3.6.1.2.1.4.20.1.2',
+        'vendor': '1.3.6.1.2.1.1.1.0'
+    }
 
-    def __init__(self,
-                 router_ip,
-                 community,
-                 user_name=None,
-                 auth_key=None,
-                 priv_key=None,
-                 version='2c',
-                 snmp_port=161
-                 ):
-        super(SnmpPoll, self).__init__()
-        self.router_ip = router_ip
-        self.community = community
-        self.snmp_port = snmp_port
-        self.user_name = user_name
-        self.auth_key = auth_key
-        self.priv_key = priv_key
-        self.version = version
+    def __init__(self, **kwargs):
+        super(SnmpPoller, self).__init__()
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+                raise TypeError(
+                    "%r is an invalid keyword argument for %s" %
+                    (k, cls_.__name__))
+            setattr(self, k, kwargs[k])
 
-    def _to_list(self):
+    def _to_list(self, oid=None):
         '''
         parse snmp return & return list
         '''
@@ -57,12 +77,20 @@ class SnmpPoll(object):
             if error_indication:
                 break
             elif error_status:
-                print('%s at %s' % (error_status.prettyPrint(),
-                                    error_index and var_binds[int(error_index) - 1][0] or '?'))
+                self.logger.error('%s at %s',
+                                  error_status.prettyPrint(),
+                                  (error_index and var_binds[int(error_index) - 1][0] or '?'))
                 break
             else:
                 for var_bind in var_binds:
-                    mib_ret.append([x.prettyPrint() for x in var_bind])
+                    name, value = var_bind
+                    name = str(name)
+                    value = str(value)
+                    if value:
+                        mib_ret.append([name, value])
+            if oid:
+                mib_ret = [mib for mib in mib_ret if re.match(
+                    r'%s' % oid, str(mib[-2]))]
         return mib_ret
 
     def get_auth(self):
@@ -114,11 +142,33 @@ class SnmpPoll(object):
                                 non_repeaters, max_repeaters,
                                 ObjectType(ObjectIdentity(oid)),
                                 maxCalls=10)
-        return self._to_list()
+        return self._to_list(oid)
+
+    def get_mib_by_oid(self, oid):
+        '''
+        get snmp mib by oid, compatible getCmd & bulkCmd
+        '''
+        mib_ret = self.get_cmd(oid) or self.bulk_cmd(oid)
+        return mib_ret
+
+    def get_oid(self, oid_type):
+        '''
+        get common snmp oid
+        oid_list = {
+            'sys_name': '1.3.6.1.2.1.1.5.0',
+            'if_descr': '1.3.6.1.2.1.2.2.1.2.%s',
+            'if_name': '1.3.6.1.2.1.31.1.1.1.1.%s',
+            'if_speed': '1.3.6.1.2.1.2.2.1.5.%s',
+            'if_number': '1.3.6.1.2.1.2.1.0.%s',
+            'if_list': '1.3.6.1.2.1.2.2.1.2',
+            'if_ip': '1.3.6.1.2.1.4.20.1.2.%s'
+        }
+        '''
+        return self.oid_list.get(oid_type)
 
 
 if __name__ == '__main__':
-    snmp_poll = SnmpPoll('10.75.44.119', 'cisco')
-    print snmp_poll.next_cmd('1.3.6.1.2.1.2.2.1.2')
-    print snmp_poll.bulk_cmd('1.3.6.1.2.1.2.2.1.2')
-    print snmp_poll.get_cmd('1.3.6.1.2.1.2.2.1.2')
+    POLLER = SnmpPoller(router_ip='10.75.44.119', community='cisco')
+    OID_STR = POLLER.oid_list.get('vendor')
+    # print POLLER.next_cmd(OID_STR)
+    print POLLER.get_mib_by_oid(OID_STR)

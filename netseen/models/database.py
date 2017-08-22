@@ -13,6 +13,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -68,6 +69,21 @@ class DataBase(object):
         drop all tables
         '''
         BASE.metadata.drop_all(self.get_engine())
+
+    @contextmanager
+    def session_scope(self):
+        '''
+        session scope
+        '''
+        session = (self.get_session())()
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
 
 if __name__ == '__main__':

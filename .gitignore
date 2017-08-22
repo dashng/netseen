@@ -103,3 +103,4 @@ ENV/
 .vscode/
 doc/.DS_Store
 netseen/netseen.yaml
+unit_test.py
