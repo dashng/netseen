@@ -36,9 +36,12 @@ class YamlParser(object):
         self._docs = self._load_yaml()
 
     def _load_yaml(self):
-        stream = open(self._path, "r")
-        docs = yaml.load_all(stream)
-        return docs
+        try:
+            stream = open(self._path, "r")
+            docs = yaml.load_all(stream)
+            return docs
+        except IOError:
+            return {}
 
     def yaml_to_dict(self):
         '''

@@ -3,13 +3,12 @@
 from __future__ import print_function
 import os
 import sys
+import unittest
 
 from flask_script import Manager
 
 from netseen import create_app
-# from netseen.extensions import db
 from netseen.models.database import DataBase
-# from netseen.models.user import User
 
 sys.path.insert(0, os.getcwd())
 
@@ -29,6 +28,16 @@ def createdb(drop_first=False):
     except Exception as e:
         print(e)
 
+
+@manager.command
+def test():
+    """Runs the unit tests without coverage."""
+    tests = unittest.TestLoader().discover('netseen.tests', pattern='test*.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    else:
+        return 1
 
 # @manager.command
 # def create_admin():

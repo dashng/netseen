@@ -13,21 +13,22 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 
-from netseen.models.table import Table
+from netseen.tests.db_base import BaseDB
+from netseen.models.node import Node
 
 
-class Node(Table):
-    '''
-    router tables
-    '''
+class TestNode(BaseDB):
 
-    __tablename__ = 'Node'
-    host_name = Column(String(32), primary_key=True, nullable=False)
-    local_router_id = Column(Integer, nullable=False)
-    as_num = Column(Integer, nullable=False)
-    bgpls_id = Column(Integer, nullable=False)
-    igp_id = Column(Integer, nullable=False)
-    prefixs = relationship("Prefix")
+    def test_add(self):
+        node = Node(
+            host_name='test',
+            local_router_id=12334,
+            as_num=100,
+            bgpls_id=11111,
+            igp_id=222222
+        )
+        self.session.add(node)
+        self.session.commit()
+        self.assertEqual(self.session.query(Node).count(), 1)
+        self.assertEqual(self.session.query(Node).all(), [node])
