@@ -27,7 +27,5 @@ class Router(Table):
     ip_int = Column(Integer, primary_key=True, nullable=False, unique=True)
     community = Column(String(32), nullable=False, unique=False)
     host_name = Column(String(32), nullable=False, unique=True)
-    cpu = Column(Integer, nullable=False)
-    memory = Column(Integer, nullable=False)
     vendor = Column(String(32), nullable=False)
     interfaces = relationship("Interface")
