@@ -13,7 +13,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from sqlalchemy import Column, Integer, Float
+from sqlalchemy import Column, Integer, Float, String
 
 from netseen.models.table import Table
 
@@ -24,10 +24,10 @@ class Link(Table):
     '''
 
     __tablename__ = 'Link'
-    link_local_ipv4_int = Column(
-        Integer, primary_key=True, nullable=False, unique=False)
+    link_local_ipv4 = Column(
+        String(64), primary_key=True, nullable=False, unique=False)
     link_remote_ipv4 = Column(
-        Integer, primary_key=True, nullable=False, unique=False)
+        String(64), primary_key=True, nullable=False, unique=False)
     adj_segment_id = Column(Integer, nullable=True)
     metric_igp = Column(Integer, nullable=True)
     metric_te = Column(Integer, nullable=True)

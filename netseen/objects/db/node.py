@@ -13,22 +13,20 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from netseen.models import node
+from netseen.objects.db import NetseenDbObject
+from netseen.objects import fields
 
-from netseen.tests.db_base import BaseDB
-from netseen.models.node import Node
 
-
-class TestNode(BaseDB):
-
-    def test_add(self):
-        node = Node(
-            host_name='test',
-            local_router_id=12334,
-            as_num=100,
-            bgpls_id=11111,
-            igp_id=222222
-        )
-        self.session.add(node)
-        self.session.commit()
-        self.assertEqual(self.session.query(Node).count(), 1)
-        self.assertEqual(self.session.query(Node).all(), [node])
+class Node(NetseenDbObject):
+    """Node object
+    """
+    db_model = node.Node
+    fields = {
+        'host_name': fields.StringField(),
+        'local_router_id': fields.IPAddressField(),
+        'as_num': fields.IntegerField(),
+        'bgpls_id': fields.StringField(),
+        'igp_id': fields.StringField(),
+        'ospf_id': fields.StringField(nullable=True)
+    }
