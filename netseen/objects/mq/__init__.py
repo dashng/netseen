@@ -13,6 +13,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from flask_sqlalchemy import SQLAlchemy
+from netseen.objects.base import NetseenObject
 
-db = SQLAlchemy()
+
+class NetseenMQObject(NetseenObject):
+    """the base netseen database object
+    """
+    pass

@@ -14,6 +14,8 @@
 #    under the License.
 
 from contextlib import contextmanager
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -32,51 +34,31 @@ class DataBase(object):
     get DB session
     '''
 
-    def __init__(self, db_url=None):
-        self.db_url = db_url
-        super(DataBase, self).__init__()
-
-    def get_db_url(self):
-        '''
-        get data base url
-        '''
-        if not self.db_url:
-            self.db_url = YamlParser().yaml_to_dict().get('DATABASE_URL')
-        return self.db_url
-
-    def get_engine(self):
-        '''
-        create db engine
-        '''
-        db_url = self.get_db_url()
-        engine = create_engine(db_url)
-        return engine
-
-    def get_session(self):
-        '''
-        get db session
-        '''
-        engine = self.get_engine()
-        return sessionmaker(bind=engine)
+    def __init__(self, db_url=None, **kwargs):
+        if not db_url:
+            db_url = os.environ.get(
+                'DATABASE_URL', YamlParser().yaml_to_dict().get('DATABASE_URL'))
+        self.engine = create_engine(db_url, **kwargs)
+        self.session = sessionmaker(self.engine)()
 
     def create_all(self):
         '''
         create all tables
         '''
-        BASE.metadata.create_all(self.get_engine())
+        BASE.metadata.create_all(self.engine)
 
     def drop_all(self):
         '''
         drop all tables
         '''
-        BASE.metadata.drop_all(self.get_engine())
+        BASE.metadata.drop_all(self.engine)
 
     @contextmanager
     def session_scope(self):
         '''
         session scope
         '''
-        session = (self.get_session())()
+        session = self.session
         try:
             yield session
             session.commit()

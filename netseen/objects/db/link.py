@@ -13,25 +13,21 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""The basic class for database testing
-"""
-
-import unittest
-
-from sqlalchemy.pool import StaticPool
-
-from netseen.models.database import DataBase
+from netseen.models import link
+from netseen.objects.db import NetseenDbObject
+from netseen.objects import fields
 
 
-class BaseDB(unittest.TestCase):
-    """the basic class of database testing
+class Link(NetseenDbObject):
+    """Link object
     """
-    def setUp(self):
-        self.database = DataBase(
-            'sqlite:///:memory:',
-            connect_args={'check_same_thread': False},
-            poolclass=StaticPool)
-        self.database.create_all()
-
-    def tearDown(self):
-        self.database.drop_all()
+    db_model = link.Link
+    fields = {
+        'link_local_ipv4': fields.IPAddressField(),
+        'link_remote_ipv4': fields.IPAddressField(),
+        'adj_segment_id': fields.IntegerField(nullable=True),
+        'metric_igp': fields.IntegerField(nullable=True),
+        'metric_te': fields.IntegerField(nullable=True),
+        'max_bandwidth': fields.IntegerField(nullable=True),
+        'max_rsv_bandwidth': fields.IntegerField(nullable=True)
+    }

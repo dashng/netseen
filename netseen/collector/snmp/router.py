@@ -47,11 +47,6 @@ class Router(object):
     def add(self, **kwargs):
         '''
         add router
-        :ip_int: ip int format
-        :host_name: router host_name
-        :cpu: cpu
-        :memory: memory
-        :vendor: router vendor
         '''
         router = RouterTable(**kwargs)
         ip_int = kwargs.get('ip_int')
@@ -163,13 +158,13 @@ class Router(object):
 
 if __name__ == '__main__':
     ROUTER_CLS = Router()
-    # ARGS = {
-    #     'ip_int': 999900,
-    #     'host_name': 'test_router4',
-    #     'cpu': 80,
-    #     'memory': 999,
-    #     'vendor': 'cisco'
-    # }
+    ARGS = {
+        'ip_int': 999900,
+        'host_name': 'test_router4',
+        'cpu': 80,
+        'memory': 999,
+        'vendor': 'cisco'
+    }
     # ROUTER_CLS.add(**ARGS)
     # print ROUTER_CLS.get(ip_int=999900)
     # ROUTER_CLS.delete(ip_int=999900)
