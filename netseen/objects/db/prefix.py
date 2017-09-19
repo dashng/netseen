@@ -13,26 +13,19 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""The basic class for database testing
-"""
-
-import unittest
-
-from sqlalchemy.pool import StaticPool
-
-from netseen.database import DataBase
+from netseen.models import prefix
+from netseen.objects.db import NetseenDbObject
+from netseen.objects import fields
 
 
-class BaseDB(unittest.TestCase):
-    """the basic class of database testing
+class Prefix(NetseenDbObject):
+    """prefix object
     """
-    def setUp(self):
-        self.database = DataBase(
-            'sqlite:///:memory:',
-            connect_args={'check_same_thread': False},
-            poolclass=StaticPool)
-        self.database.engine.execute("PRAGMA foreign_keys=ON")
-        self.database.create_all()
+    db_model = prefix.Prefix
 
-    def tearDown(self):
-        self.database.drop_all()
+    fields = {
+        'prefix': fields.IPNetworkField(),
+        'prefix_sid': fields.IntegerField(nullable=True),
+        'prefix_metric': fields.IntegerField(),
+        'host_name': fields.StringField()
+    }
