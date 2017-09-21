@@ -60,8 +60,8 @@ class TestNode(db_base.BaseDB):
         except Exception as e:
             self.assertEqual(type(e), ValueError)
 
-    def test_create_get_delete_node(self):
-        """create, get, delete node from database
+    def test_create_get_delete_update_node(self):
+        """create, get, delete update node from database
         """
         node_dict_1 = {
             'host_name': 'abc',
@@ -87,11 +87,25 @@ class TestNode(db_base.BaseDB):
 
         # get one object
         node1 = Node.get_object(self.database, host_name='abc')
-        self.assertEqual(node_dict_1['local_router_id'], node1.__dict__['local_router_id'])
+        self.assertEqual(node_dict_1['local_router_id'], node1.get('local_router_id'))
 
         # get objects
         nodes = Node.get_objects(self.database, as_num=100)
         self.assertEqual(2, len(nodes))
+
+        # update one object
+        self.assertEqual(0, Node.count(self.database, local_router_id='3.3.3.3'))
+        node_db_obj = Node.update_object(
+            self.database, {'local_router_id': '3.3.3.3'}, host_name='abc')
+        self.assertEqual('3.3.3.3', node_db_obj.get('local_router_id'))
+        self.assertEqual(1, Node.count(self.database, local_router_id='3.3.3.3'))
+
+        # update more than objects
+        self.assertEqual(2, Node.count(self.database, as_num=100))
+        update_count = Node.update_objects(
+            self.database, {'as_num': 200}, igp_id='0.0.0.0')
+        self.assertEqual(2, update_count)
+        self.assertEqual(2, Node.count(self.database, as_num=200))
 
         # delete objects
         Node.delete_object(self.database, host_name='abc')

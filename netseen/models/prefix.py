@@ -25,7 +25,7 @@ class Prefix(Table):
 
     __tablename__ = 'Prefix'
     prefix = Column(String(32), primary_key=True, nullable=False, unique=True)
-    prefix_sid = Column(Integer, nullable=False)
+    prefix_sid = Column(Integer, nullable=True)
     prefix_metric = Column(Integer, nullable=False)
     # host_name = Column(String(32), nullable=False, unique=True)
     host_name = Column(String(32), ForeignKey(

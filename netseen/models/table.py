@@ -13,6 +13,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import six
+
 from sqlalchemy import Column, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -30,6 +32,55 @@ class Table(BASE):
     def __str__(self):
         pass
 
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
 
-if __name__ == '__main__':
-    pass
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __contains__(self, key):
+        try:
+            getattr(self, key)
+        except AttributeError:
+            return False
+        else:
+            return True
+
+    def get(self, key, default=None):
+        """get item
+        """
+        return getattr(self, key, default)
+
+    def save(self, session):
+        """Save this object."""
+        with session.begin(subtransactions=True):
+            session.add(self)
+            session.flush()
+
+    def update(self, values):
+        """make the model object act like a dict
+        """
+        for k, v in six.iteritems(values):
+            setattr(self, k, v)
+
+    def _as_dict(self):
+        """Make the model object behave like a dict.
+        Includes attributes from joins.
+        """
+        local = dict((key, value) for key, value in self)
+        joined = dict([(k, v) for k, v in six.iteritems(self.__dict__)
+                      if not k[0] == '_'])
+        local.update(joined)
+        return local
+
+    def iteritems(self):
+        """Make the model object behave like a dict."""
+        return six.iteritems(self._as_dict())
+
+    def items(self):
+        """Make the model object behave like a dict."""
+        return self._as_dict().items()
+
+    def keys(self):
+        """Make the model object behave like a dict."""
+        return [key for key, _ in self.iteritems()]

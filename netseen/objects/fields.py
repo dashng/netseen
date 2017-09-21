@@ -113,6 +113,39 @@ class IPAddress(AbstractFieldType):
             raise ValueError(six.text_type(e))
 
 
+class IPNetwork(AbstractFieldType):
+    """ip network type
+    """
+    @staticmethod
+    def constraint(obj, attr, value):
+        try:
+            return netaddr.IPNetwork(value).__str__()
+        except netaddr.AddrConversionError as e:
+            raise ValueError(six.text_type(e))
+
+
+class IPV4Network(AbstractFieldType):
+    """ipv4 network type
+    """
+    @staticmethod
+    def constraint(obj, attr, value):
+        try:
+            return netaddr.IPNetwork(value, version=4).__str__()
+        except netaddr.AddrConversionError as e:
+            raise ValueError(six.text_type(e))
+
+
+class IPV6Network(AbstractFieldType):
+    """ipv6 network type
+    """
+    @staticmethod
+    def constraint(obj, attr, value):
+        try:
+            return netaddr.IPNetwork(value, version=6).__str__()
+        except netaddr.AddrConversionError as e:
+            raise ValueError(six.text_type(e))
+
+
 class IPV4Address(IPAddress):
     """ipv4 address field type
     """
@@ -147,3 +180,15 @@ class BooleanField(AutoTypedField):
 
 class IPAddressField(AutoTypedField):
     AUTO_TYPE = IPAddress()
+
+
+class IPNetworkField(AutoTypedField):
+    AUTO_TYPE = IPNetwork()
+
+
+class IPV4NetworkField(AutoTypedField):
+    AUTO_TYPE = IPV4Network()
+
+
+class IPV6NetworkField(AutoTypedField):
+    AUTO_TYPE = IPV6Network()

@@ -86,8 +86,32 @@ class NetseenDbObject(NetseenObject):
 
     @classmethod
     def delete_object(cls, database, **kwargs):
-        '''delete one object
-        '''
+        """delete one object
+        """
         with database.session.begin(subtransactions=True):
             db_obj = cls._safe_get_object(database, **kwargs)
             database.session.delete(db_obj)
+
+    @classmethod
+    def update_object(cls, database, values, **kwargs):
+        """update one object
+        """
+        with database.session.begin(subtransactions=True):
+            db_obj = cls._safe_get_object(database, **kwargs)
+            db_obj.update(values)
+            db_obj.save(session=database.session)
+        return db_obj
+
+    @classmethod
+    def update_objects(cls, database, values, **kwargs):
+        """update all db objects match the filter
+        """
+        objs = cls.get_objects(database, **kwargs)
+        if not objs:
+            return 0
+
+        with database.session.begin(subtransactions=True):
+            for obj in objs:
+                obj.update(values)
+                obj.save(session=database.session)
+            return len(objs)
