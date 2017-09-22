@@ -15,7 +15,7 @@
 
 import six
 
-from sqlalchemy import Column, DateTime, func
+from sqlalchemy import Column, DateTime, func, orm
 from sqlalchemy.ext.declarative import declarative_base
 
 BASE = declarative_base()
@@ -29,8 +29,17 @@ class Table(BASE):
     created_on = Column(DateTime, default=func.now())
     updated_on = Column(DateTime, default=func.now(), onupdate=func.now())
 
-    def __str__(self):
-        pass
+    def __iter__(self):
+        self._i = iter(orm.object_mapper(self).columns)
+        return self
+
+    def next(self):
+        '''get next
+        '''
+        n = next(self._i).name
+        return n, getattr(self, n)
+
+    __next__ = next
 
     def __setitem__(self, key, value):
         setattr(self, key, value)
