@@ -13,35 +13,28 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-# import re
-# import traceback
+import datetime
+import json
 
-import simplejson as json
+import six
 from flask import Response
 
-# from utils.logger import Logger
+_SIMPLE_TYPE = ((six.text_type,) + six.integer_types + (type(None), bool, float))
 
 
-class JsonRet(dict):
-    '''
-    ret to json format
-    '''
-
-    def __init__(self, content=None, success=True, info=None, code=None):
-        self.res = {"meta": {"status": success,
-                             "info": info, "code": code}, "data": None}
-        self._content = content
-        try:
-            if isinstance(content, str):
-                try:
-                    self._content = json.loads(content)
-                except ValueError:
-                    self._content = content
-            self.res.update({"data": self._content})
-        except StandardError as error:
-            self.res.update(
-                {"meta": {"status": False, "info": str(error)}, "data": None})
-        super(JsonRet, self).__init__(self.res)
+def json_encoder(value):
+    """Handy for JSON serialization
+    """
+    if isinstance(value, _SIMPLE_TYPE):
+        return value
+    if isinstance(value, datetime.datetime):
+        return value.isoformat() + "Z"
+    elif isinstance(value, Exception):
+        return {
+            "exception": value.__class__.__name__,
+            "message": value.message,
+        }
+    return str(value)
 
 
 class JsonRes(Response):
@@ -49,36 +42,12 @@ class JsonRes(Response):
     json response
     '''
 
-    def __init__(self, content=None, success=True, info=None, code=None, err=None):
-        if err:
-            if isinstance(err, Exception):
-                err_msg = str(err)
-            elif isinstance(err, basestring):
-                err_msg = err
-            if isinstance(info, basestring):
-                # print info, err_msg
-                if '%s' not in info:
-                    info = '%s, %s' % (info, err_msg)
-                else:
-                    info = info % err_msg
-            # if isinstance(err, Exception):
-                # log = Logger(name="error.track")
-                # logger = log.get_logger()
-                # logger.error(traceback.format_exc())
-        content = json.dumps(
-            JsonRet(content=content, success=success, info=info, code=code))
+    def __init__(self, data=None, success=True, info=None, code=None):
+        self.res = {
+            "meta": {
+                "status": success,
+                "info": info, "code": code},
+            "data": data}
+        content = json.dumps(self.res, default=json_encoder)
         super(JsonRes, self).__init__(content, status=200,
                                       mimetype="application/json")
-
-
-class CSVRes(Response):
-    '''
-    cvs response
-    '''
-
-    def __init__(self, content=None, file_name='download.csv'):
-        content = content.encode('utf-8-sig')
-        super(CSVRes, self).\
-            __init__(content,
-                     mimetype="text/csv;charset=gb2312",
-                     headers={"Content-disposition": "attachment; filename=%s" % file_name})
