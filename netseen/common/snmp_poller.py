@@ -14,7 +14,7 @@
 #    under the License.
 
 import re
-from netseen.common.logger import Logger
+# from netseen.common.logger import Logger
 from pysnmp.hlapi import \
     bulkCmd, getCmd, nextCmd, SnmpEngine, CommunityData, UdpTransportTarget, \
     ContextData, ObjectType, ObjectIdentity, UsmUserData
@@ -33,7 +33,7 @@ class SnmpPoller(object):
     :version: snmp verison ['2c', '3']
     :snmp_port: default set to be 161
     '''
-    logger = Logger(name=__name__).get_logger()
+    # logger = Logger(name=__name__).get_logger()
     SNMP_VERSION_2C = '2c'
     SNMP_VERSION_3 = '3'
     snmp_ret = None
@@ -169,6 +169,6 @@ class SnmpPoller(object):
 
 if __name__ == '__main__':
     POLLER = SnmpPoller(router_ip='10.75.44.119', community='cisco')
-    OID_STR = POLLER.oid_list.get('vendor')
+    OID_STR = POLLER.oid_list.get('if_list')
     # print POLLER.next_cmd(OID_STR)
     print POLLER.get_mib_by_oid(OID_STR)
