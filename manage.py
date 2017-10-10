@@ -8,7 +8,7 @@ import unittest
 from flask_script import Manager
 
 from netseen import create_app
-from netseen.models.database import DataBase
+from netseen.database import DataBase
 
 sys.path.insert(0, os.getcwd())
 
